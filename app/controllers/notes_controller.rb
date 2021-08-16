@@ -1,19 +1,17 @@
 class NotesController < ApplicationController
   before_action :set_note, only: [:show, :update, :destroy]
 
-  # GET /notes
+
   def index
     @notes = Note.all
 
     render json: @notes
   end
 
-  # GET /notes/1
   def show
     render json: @note
   end
 
-  # POST /notes
   def create
     @note = Note.new(note_params)
 
@@ -24,7 +22,6 @@ class NotesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /notes/1
   def update
     if @note.update(note_params)
       render json: @note
@@ -33,7 +30,7 @@ class NotesController < ApplicationController
     end
   end
 
-  # DELETE /notes/1
+  
   def destroy
     @note.destroy
   end
