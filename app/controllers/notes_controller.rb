@@ -3,44 +3,50 @@ class NotesController < ApplicationController
 
 
   def index
-    @notes = Note.all
-
-    render json: @notes
+    notes = Note.all
+    render json: notes.as_json
   end
-
+ 
   def show
-    render json: @note
+    note_id = params["id"]
+    note = Note.find(note_id)
+    render json: note
   end
 
   def create
-    @note = Note.new(note_params)
-
-    if @note.save
-      render json: @note, status: :created, location: @note
-    else
-      render json: @note.errors, status: :unprocessable_entity
+    note = Note.new(
+      name: params["title"],
+      content: params["body"],
+      user_id: current_user.id,
+    )
+    if note.save
+      render json: note.as_json
+    else 
+      render json: {errors: note.errors.full_messages}, 
+      status: 422
     end
   end
 
   def update
-    if @note.update(note_params)
-      render json: @note
+    note_id = params["id"]
+    note = Note.find_by(id: note_id)
+
+    note.title = params["title"] || note.title
+    note.content = params["body"] || note.content
+
+    if note.save
+      render json: note.as_json
     else
-      render json: @note.errors, status: :unprocessable_entity
+      render json: {errors: note.errors.full_messages}, 
+      status: 422
     end
   end
 
-  
   def destroy
-    @note.destroy
-  end
-
-  def set_note
-    @note = Note.find(params[:id])
-  end
-
-
-  def note_params
-    params.require(:note).permit(:name, :content, :datetime)
+    note_id = params[:id]
+    note = Note.find_by(id: note_id)
+    note.destroy
+    render json: {message: "Note has been successfully destroyed!"}    
   end
 end
+
