@@ -1,5 +1,5 @@
 class NotesController < ApplicationController
-  before_action :set_note, only: [:show, :update, :destroy]
+  before_action :authenticate_user, except: [:show, :index]
 
 
   def index
@@ -15,7 +15,7 @@ class NotesController < ApplicationController
 
   def create
     note = Note.new(
-      name: params["title"],
+      name: params["name"],
       content: params["body"],
       user_id: current_user.id,
     )
@@ -31,8 +31,8 @@ class NotesController < ApplicationController
     note_id = params["id"]
     note = Note.find_by(id: note_id)
 
-    note.title = params["title"] || note.title
-    note.content = params["body"] || note.content
+    note.name = params["name"] || note.name
+    note.content = params["content"] || note.content
 
     if note.save
       render json: note.as_json
