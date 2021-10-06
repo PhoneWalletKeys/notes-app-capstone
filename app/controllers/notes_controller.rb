@@ -16,7 +16,7 @@ class NotesController < ApplicationController
   def create
     note = Note.new(
       name: params["name"],
-      content: params["body"],
+      content: params["content"],
       user_id: current_user.id,
     )
     if note.save
